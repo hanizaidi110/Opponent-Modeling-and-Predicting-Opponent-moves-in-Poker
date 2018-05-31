@@ -157,13 +157,35 @@ result = totalCounts()
 #Insert into Move
 # handID, player_ID, action, amount, phase, postion, indicators
 # moves; player, action ,phase
-for i in range(len(result["Hands"])):
-    if result["Hands"][i]:
-        for j in range(len(result["Hands"][i]["moves"])):
-            s = Move(player_ID=result["Hands"][i]["moves"][j]["Player"],
-                              hand_ID=result["Hands"][i]["HandID"],
-                              stack_size=result["Hands"][i]["Positions"][j]["StackSize"],
-                              seat=result["Hands"][i]["Positions"][j]["Seat"])
-        #             s.save();
-        #
+# move = ""
+# amount = ""
+# for i in range(len(result["Hands"])):
+#     if result["Hands"][i]:
+#         for j in range(len(result["Hands"][i]["moves"])):
+#             new = result["Hands"][i]["moves"][j]["Action"].split('$')
+#             if len(new) > 2:
+#                 move = new[0]
+#                 amount = new[2].split(' ')[0]
+#             if len(new) > 1 and len(new) < 3:
+#                 move = new[0]
+#                 amount = new[1].split(' ')[0]
+#             elif len(new) < 2:
+#                 move = new[0]
+#                 amount = "0"
+#
+#
+#             s = Move(         player_ID= result["Hands"][i]["moves"][j]["Player"],\
+#                               hand_ID=result["Hands"][i]["HandID"],\
+#                               action = move,\
+#                               amount = amount,
+#                               phase = result["Hands"][i]["moves"][j]["Phase"],
+#                               postion = "button",
+#                               indicators = "some_thing"
+#                               )
+#             s.save();
+
+#Insert into Player
+# m_ratio, player_name, hands_played, avrg_profit, avrg_stake, avrg_ROI, total_stake, player_since
+
+
 
