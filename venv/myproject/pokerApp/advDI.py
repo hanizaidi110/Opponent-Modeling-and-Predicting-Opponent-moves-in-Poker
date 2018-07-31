@@ -6,8 +6,8 @@ from django.db import connection
 from django.utils import timezone
 import psycopg2
 
-#from django.db import models
-from pokerApp.models import *
+# from django.db import models
+# from pokerApp.models import *
 
 #conn = psycopg2.connect("host=localhost dbname=poker user=hani password=hanihani1 ")
 #cur = conn.cursor()
@@ -44,9 +44,7 @@ def countNumberOfHands(freshData, listy,filename):
     phase = ""
     hand = []
     test = []
-    flop = False
     meow = []
-
     for i in newData:
         hand = i.split("\n")
         #Limiting hands data
@@ -55,14 +53,50 @@ def countNumberOfHands(freshData, listy,filename):
         moves = []
         positions = []
         listy = {}
-
-        showdown = "False"
-        turn = "False"
-        river = "False"
-        flop = "False"
-
+        preflop = flop = turn = river = False
         if hand[0] == "" and hand[1] != "":
             for i in range(len(hand)):
+
+                    if "*** HOLE CARDS ***" in hand[i]:
+                        preflop = True
+                        flop = False
+                        turn = False
+                        river = False
+                    elif "*** FLOP ***" in hand[i]:
+                        # listy["Phase"] = "Flop"
+                        flop = True
+                        preflop = False
+                        turn = False
+                        river = False
+                    elif "*** TURN ***" in hand[i]:
+                        # listy["Phase"] = "Turn"
+                        turn = True
+                        preflop = False
+                        flop = False
+                        river = False
+                    elif "*** RIVER ***" in hand[i]:
+                        # listy["Phase"] = "River"
+                        river = True
+                        preflop = False
+                        flop = False
+                        turn = False
+
+                    if preflop == True:
+                        listy["Phase"] = "Preflop"
+                        phase = "Preflop"
+                    elif flop == True:
+                        listy["Phase"] = "Flop"
+                        phase = "Flop"
+                    elif turn == True:
+                        listy["Phase"] = "Turn"
+                        phase = "Turn"
+                    elif river == True:
+                        listy["Phase"] = "River"
+                        phase = "River"
+                    else:
+                        listy["Phase"] = "None"
+                        phase = "PreFlop"
+
                     listy["HandID"] = hand[1].split(' ')[2]
                     listy["TimeStamp"] = hand[1].split('-')[1]
                     listy["GameType"] = hand[1].split(':')[1].split('-')[0]
@@ -78,22 +112,11 @@ def countNumberOfHands(freshData, listy,filename):
                     if "posts big blind" in hand[i]:
                             listy["BigBlind"] = hand[i].split(':')[0]
                     if ":" in hand[i].split(' ')[0]:
-                            moves.append({"Player": hand[i].split(':')[0], "Action": hand[i].split(':')[1], "Phase": "Pre-Flop"})
+                            moves.append({"Player": hand[i].split(':')[0], "Action": hand[i].split(':')[1], "Phase": phase})
                     if "collected" in hand[i] and "Seat" not in hand[i]:
                             listy["Winner"] = hand[i].split(' ')[0]
-                    if "SHOW DOWN" in hand[i]:
-                            showdown =  "True"
-                    if "TURN" in hand[i]:
-                            turn =  "True"
-                    if "RIVER" in hand[i]:
-                            river = "True"
-                    if "FLOP" in hand[i]:
-                            flop = "True"
-
-            listy["flop"] = flop
-            listy["showdown"] = showdown
-            listy["turn"] = turn
-            listy["river"] = river
+                            listy["Winner_Amount"] = hand[i].split(" ")[2]
+                            print(listy["Winner"] + " " + listy["Winner_Amount"])
             listy["Positions"] = positions
             listy["moves"] = moves
             test.append(listy)
